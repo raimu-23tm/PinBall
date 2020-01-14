@@ -11,6 +11,10 @@ public class FripperController : MonoBehaviour {
     //弾いた時の傾き
     private float flickAngle = -20;
 
+    //フリッパーフラグ
+    private bool rightFlipperFlg = false;
+    private bool leftFlipperFlg = false;
+
     // Use this for initialization
     void Start()
     {
@@ -58,27 +62,50 @@ public class FripperController : MonoBehaviour {
                     if (t.position.x < (Screen.width / 2) && tag == "LeftFripperTag")
                     {
                         SetAngle(this.flickAngle);
+                        leftFlipperFlg = true;
                     }
                     if (t.position.x >= (Screen.width / 2) && tag == "RightFripperTag")
                     {
                         SetAngle(this.flickAngle);
+                        rightFlipperFlg = true;
                     }
 
                     break;
-
+                   
                 case TouchPhase.Ended:
-                case TouchPhase.Canceled:
 
-                    if (t.position.x < (Screen.width / 2) && tag == "LeftFripperTag")
+                    if (t.position.x < (Screen.width / 2))
                     {
-                        SetAngle(this.defaultAngle);
+
+                        if (leftFlipperFlg == true && tag == "LeftFripperTag")
+                        {
+                            SetAngle(this.defaultAngle);
+                            leftFlipperFlg = false;
+                        }
+                        else if (leftFlipperFlg == false && tag == "RightFripperTag")
+                        {
+                            SetAngle(this.defaultAngle);
+                            rightFlipperFlg = false;
+                        }
+
                     }
-                    if (t.position.x >= (Screen.width / 2) && tag == "RightFripperTag")
+                    else if (t.position.x >= (Screen.width / 2))
                     {
-                        SetAngle(this.defaultAngle);
+                        if (rightFlipperFlg == true && tag == "RightFripperTag")
+                        {
+                            SetAngle(this.defaultAngle);
+                            rightFlipperFlg = false;
+                        }
+                        else if (rightFlipperFlg == false && tag == "LeftFripperTag")
+                        {
+                            SetAngle(this.defaultAngle);
+                            leftFlipperFlg = false;
+                        }
+
                     }
 
                     break;
+
             }
         }
 

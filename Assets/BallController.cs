@@ -73,12 +73,40 @@ public class BallController : MonoBehaviour
         }
 
         //超速防止
-        if (_rigidbody.velocity.magnitude > 20)
+        if (_rigidbody.velocity.magnitude > 18)
         {
             Vector3 currentVelo = _rigidbody.velocity;
-            currentVelo = currentVelo * (20 / _rigidbody.velocity.magnitude);
+            currentVelo = currentVelo * (18 / _rigidbody.velocity.magnitude);
             _rigidbody.velocity = currentVelo;
         }
+
+    }
+
+    //衝突時に呼ばれる関数
+    void OnCollisionEnter(Collision other)
+    {
+
+        string tag = other.gameObject.tag.ToString();
+
+        // タグによってポイント加算
+        if (tag == "SmallStarTag")
+        {
+            BallController.currentPoint += 1;
+        }
+        else if (tag == "LargeStarTag")
+        {
+            BallController.currentPoint += 5;
+        }
+        else if (tag == "SmallCloudTag")
+        {
+            BallController.currentPoint += 10;
+        }
+        else if (tag == "LargeCloudTag")
+        {
+            BallController.currentPoint += 50;
+        }
+
+        this.pointText.GetComponent<Text>().text = "Point: " + BallController.currentPoint;
 
     }
 
