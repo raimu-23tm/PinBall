@@ -15,6 +15,10 @@ public class FripperController : MonoBehaviour {
     private bool rightFlipperFlg = false;
     private bool leftFlipperFlg = false;
 
+    /// <summary>フリッパーを操作している fingerId</summary>
+    int fingerId = -1;
+
+
     // Use this for initialization
     void Start()
     {
@@ -51,63 +55,37 @@ public class FripperController : MonoBehaviour {
         }
 
         //タッチ操作に対応
+        #region touchControl
         foreach (Touch t in Input.touches)
         {
-            var id = t.fingerId;
-
-            switch (t.phase)
+            if (t.phase == TouchPhase.Began)
             {
-                case TouchPhase.Began:
-
-                    if (t.position.x < (Screen.width / 2) && tag == "LeftFripperTag")
-                    {
-                        SetAngle(this.flickAngle);
-                        leftFlipperFlg = true;
-                    }
-                    if (t.position.x >= (Screen.width / 2) && tag == "RightFripperTag")
-                    {
-                        SetAngle(this.flickAngle);
-                        rightFlipperFlg = true;
-                    }
-
-                    break;
-                   
-                case TouchPhase.Ended:
-
-                    if (t.position.x < (Screen.width / 2))
-                    {
-
-                        if (leftFlipperFlg == true && tag == "LeftFripperTag")
-                        {
-                            SetAngle(this.defaultAngle);
-                            leftFlipperFlg = false;
-                        }
-                        else if (leftFlipperFlg == false && tag == "RightFripperTag")
-                        {
-                            SetAngle(this.defaultAngle);
-                            rightFlipperFlg = false;
-                        }
-
-                    }
-                    else if (t.position.x >= (Screen.width / 2))
-                    {
-                        if (rightFlipperFlg == true && tag == "RightFripperTag")
-                        {
-                            SetAngle(this.defaultAngle);
-                            rightFlipperFlg = false;
-                        }
-                        else if (rightFlipperFlg == false && tag == "LeftFripperTag")
-                        {
-                            SetAngle(this.defaultAngle);
-                            leftFlipperFlg = false;
-                        }
-
-                    }
-
-                    break;
-
+                if (t.position.x > Screen.width / 2 && tag == "RightFripperTag")
+                {
+                    fingerId = t.fingerId;
+                    SetAngle(this.flickAngle);
+                }
+                else if (t.position.x <= Screen.width / 2 && tag == "LeftFripperTag")
+                {
+                    fingerId = t.fingerId;
+                    SetAngle(this.flickAngle);
+                }
+            }
+            else if (t.phase == TouchPhase.Ended)
+            {
+                if (t.fingerId == fingerId && tag == "RightFripperTag")
+                {
+                    fingerId = -1;
+                    SetAngle(this.defaultAngle);
+                }
+                else if (t.fingerId == fingerId && tag == "LeftFripperTag")
+                {
+                    fingerId = -1;
+                    SetAngle(this.defaultAngle);
+                }
             }
         }
+        #endregion
 
     }
 
